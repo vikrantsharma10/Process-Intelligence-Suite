@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Process Intelligence Suite — PIS V1.0</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+  *, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  :root {
+    --bg: #0f0f0f;
+    --bg-panel: #161616;
+    --bg-card: #131313;
+    --border: #222222;
+    --border-mid: #2a2a2a;
+    --muted: #444444;
+    --dim: #666666;
+    --light: #999999;
+    --body: #f0f0f0;
+    --accent: #c8f135;
+    --accent-text: #0f0f0f;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--body);
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 48px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(15,15,15,0.92);
+    backdrop-filter: blur(8px);
+  }
+
+  .nav-logo {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.12em;
+    color: var(--light);
+    text-transform: uppercase;
+  }
+
+  .nav-logo span { color: var(--accent); }
+
+  .nav-right {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--dim);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 100px 48px 80px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .hero-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 36px;
+  }
+
+  .hero-headline {
+    font-family: 'Instrument Serif', serif;
+    font-size: clamp(52px, 6.5vw, 96px);
+    font-weight: 400;
+    line-height: 0.97;
+    letter-spacing: -0.02em;
+    max-width: 860px;
+    margin-bottom: 48px;
+    color: var(--body);
+  }
+
+  .hero-headline em {
+    font-style: italic;
+    color: var(--light);
+  }
+
+  .hero-bottom {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 48px;
+  }
+
+  .hero-sub {
+    font-size: 15px;
+    line-height: 1.75;
+    color: var(--body);
+    max-width: 500px;
+  }
+
+  .hero-stats {
+    display: flex;
+    flex-shrink: 0;
+    border: 1px solid var(--border);
+  }
+
+  .stat {
+    padding: 20px 32px;
+    border-right: 1px solid var(--border);
+    text-align: center;
+  }
+
+  .stat:last-child { border-right: none; }
+
+  .stat-num {
+    font-family: 'Instrument Serif', serif;
+    font-size: 36px;
+    font-weight: 400;
+    line-height: 1;
+    color: var(--body);
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  .stat-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    color: var(--dim);
+    text-transform: uppercase;
+    display: block;
+  }
+
+  /* SECTIONS */
+  section {
+    padding: 96px 48px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--dim);
+    text-transform: uppercase;
+    margin-bottom: 56px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .section-label::before {
+    content: '';
+    display: inline-block;
+    width: 20px;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  .section-headline {
+    font-family: 'Instrument Serif', serif;
+    font-size: clamp(32px, 3.5vw, 52px);
+    font-weight: 400;
+    line-height: 1.08;
+    letter-spacing: -0.01em;
+    color: var(--body);
+  }
+
+  .section-headline em {
+    font-style: italic;
+    color: var(--light);
+  }
+
+  /* WHAT IS PIS */
+  .what-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: start;
+  }
+
+  .body-text {
+    font-size: 15px;
+    line-height: 1.8;
+    color: var(--body);
+  }
+
+  .pillars {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    border: 1px solid var(--border);
+    margin-top: 64px;
+  }
+
+  .pillar {
+    padding: 36px 28px;
+    border-right: 1px solid var(--border);
+  }
+
+  .pillar:last-child { border-right: none; }
+
+  .pillar-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    display: block;
+  }
+
+  .pillar-title {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--body);
+    margin-bottom: 10px;
+  }
+
+  .pillar-body {
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--body);
+  }
+
+  /* MODULES */
+  .modules-intro {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--dim);
+    letter-spacing: 0.06em;
+    margin-bottom: 40px;
+    margin-top: -20px;
+  }
+
+  .module-card {
+    display: grid;
+    grid-template-columns: 72px 1fr 40px;
+    align-items: start;
+    gap: 40px;
+    padding: 40px 40px;
+    border: 1px solid var(--border);
+    border-top: none;
+    background: var(--bg-card);
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    position: relative;
+  }
+
+  .module-card:first-of-type { border-top: 1px solid var(--border); }
+
+  .module-card:hover { background: var(--bg-panel); }
+
+  .module-card:hover .module-arrow {
+    color: var(--accent);
+    transform: translate(3px, -3px);
+  }
+
+  .module-card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 2px;
+    background: var(--accent);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+
+  .module-card:hover::before { opacity: 1; }
+
+  .module-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    color: var(--muted);
+    text-transform: uppercase;
+    line-height: 1.6;
+    padding-top: 28px;
+  }
+
+  .module-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .module-title {
+    font-family: 'Instrument Serif', serif;
+    font-size: 28px;
+    font-weight: 400;
+    line-height: 1.1;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+
+  .module-desc {
+    font-size: 13px;
+    line-height: 1.75;
+    color: var(--body);
+    max-width: 580px;
+    margin-bottom: 18px;
+  }
+
+  .pill-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .pill {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    color: var(--light);
+    border: 1px solid var(--border);
+    padding: 4px 10px;
+    text-transform: uppercase;
+    background: var(--bg);
+  }
+
+  .module-arrow {
+    font-size: 20px;
+    color: var(--muted);
+    transition: transform 0.2s ease, color 0.2s ease;
+    padding-top: 26px;
+    line-height: 1;
+  }
+
+  /* HOW IT WORKS */
+  .steps-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    border: 1px solid var(--border);
+    margin-top: 56px;
+  }
+
+  .step {
+    padding: 36px 28px;
+    border-right: 1px solid var(--border);
+  }
+
+  .step:last-child { border-right: none; }
+
+  .step-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    display: block;
+  }
+
+  .step-title {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--body);
+    margin-bottom: 10px;
+    line-height: 1.3;
+  }
+
+  .step-body {
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--body);
+  }
+
+  /* WHO IS IT FOR */
+  .persona-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    border: 1px solid var(--border);
+    margin-top: 56px;
+  }
+
+  .persona {
+    padding: 36px 28px;
+    border-right: 1px solid var(--border);
+    transition: background 0.2s ease;
+  }
+
+  .persona:last-child { border-right: none; }
+  .persona:hover { background: var(--bg-panel); }
+
+  .persona-role {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    display: block;
+  }
+
+  .persona-title {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--body);
+    margin-bottom: 12px;
+    line-height: 1.3;
+  }
+
+  .persona-body {
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--body);
+  }
+
+  /* CTA */
+  .cta-section {
+    padding: 120px 48px;
+    border-bottom: 1px solid var(--border);
+    text-align: center;
+  }
+
+  .cta-headline {
+    font-family: 'Instrument Serif', serif;
+    font-size: clamp(40px, 5vw, 72px);
+    font-weight: 400;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin-bottom: 24px;
+    color: var(--body);
+  }
+
+  .cta-headline em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .cta-sub {
+    font-size: 15px;
+    line-height: 1.75;
+    color: var(--body);
+    max-width: 420px;
+    margin: 0 auto 48px;
+  }
+
+  .cta-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    background: var(--accent);
+    color: var(--accent-text);
+    border: none;
+    padding: 14px 28px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: opacity 0.2s ease;
+  }
+
+  .btn-primary:hover { opacity: 0.88; }
+
+  .btn-secondary {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    background: transparent;
+    color: var(--light);
+    border: 1px solid var(--border-mid);
+    padding: 14px 28px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: border-color 0.2s ease, color 0.2s ease;
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--light);
+    color: var(--body);
+  }
+
+  /* DISCLAIMER */
+  .disclaimer {
+    padding: 28px 48px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg-panel);
+  }
+
+  .disclaimer p {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    line-height: 1.7;
+    max-width: 700px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  /* FOOTER */
+  footer {
+    padding: 24px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .footer-left {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: var(--dim);
+    text-transform: uppercase;
+  }
+
+  .footer-right {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--dim);
+  }
+
+  .footer-right a {
+    color: var(--accent);
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .footer-right a:hover { color: var(--body); }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .fade-up { opacity: 0; animation: fadeUp 0.8s ease forwards; }
+  .fade-up-1 { animation-delay: 0.1s; }
+  .fade-up-2 { animation-delay: 0.25s; }
+  .fade-up-3 { animation-delay: 0.4s; }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    nav { padding: 16px 24px; }
+    .hero { padding: 120px 24px 60px; }
+    .hero-bottom { flex-direction: column; align-items: flex-start; gap: 32px; }
+    .hero-stats { width: 100%; }
+    section { padding: 64px 24px; }
+    .what-grid { grid-template-columns: 1fr; gap: 40px; }
+    .pillars { grid-template-columns: 1fr; }
+    .pillar { border-right: none; border-bottom: 1px solid var(--border); }
+    .pillar:last-child { border-bottom: none; }
+    .module-card { grid-template-columns: 1fr 24px; gap: 20px; padding: 28px 24px; }
+    .module-num { display: none; }
+    .steps-grid { grid-template-columns: 1fr 1fr; }
+    .step:nth-child(2) { border-right: none; }
+    .step:nth-child(3) { border-top: 1px solid var(--border); }
+    .step:nth-child(4) { border-top: 1px solid var(--border); border-right: none; }
+    .persona-grid { grid-template-columns: 1fr; }
+    .persona { border-right: none; border-bottom: 1px solid var(--border); }
+    .persona:last-child { border-bottom: none; }
+    .cta-section { padding: 80px 24px; }
+    .cta-buttons { flex-direction: column; align-items: center; }
+    .btn-primary, .btn-secondary { width: 100%; max-width: 320px; text-align: center; }
+    .disclaimer { padding: 24px; }
+    footer { padding: 20px 24px; flex-direction: column; gap: 8px; text-align: center; }
+  }
+
+  @media (max-width: 600px) {
+    .hero-headline { font-size: 40px; }
+    .hero-stats { flex-direction: column; }
+    .stat { border-right: none; border-bottom: 1px solid var(--border); }
+    .stat:last-child { border-bottom: none; }
+    .steps-grid { grid-template-columns: 1fr; }
+    .step { border-right: none; border-bottom: 1px solid var(--border); }
+    .step:last-child { border-bottom: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo"><span>PIS</span> / V1.0 — Process Intelligence Suite</div>
+  <div class="nav-right">Three Modules. One System.</div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-eyebrow fade-up fade-up-1">Process Intelligence Suite — PIS / V1.0</div>
+  <h1 class="hero-headline fade-up fade-up-2">
+    Your operations have<br>a diagnosis problem.<br><em>Not an execution one.</em>
+  </h1>
+  <div class="hero-bottom fade-up fade-up-3">
+    <p class="hero-sub">Most process breakdowns aren't mysterious. The steps are known. The people are capable. What's missing is an objective read on where the friction actually lives; who owns it; and why the same process runs differently across markets. PIS gives you that read. In minutes. Without a consultant in the room.</p>
+    <div class="hero-stats">
+      <div class="stat">
+        <span class="stat-num">3</span>
+        <span class="stat-label">Modules</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num">2</span>
+        <span class="stat-label">Output layers each</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num">&lt;60s</span>
+        <span class="stat-label">To diagnosis</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- WHAT IS PIS -->
+<section>
+  <div class="section-label">What is this</div>
+  <div class="what-grid">
+    <div>
+      <h2 class="section-headline">A suite of diagnostic tools built for operations <em>too complex to fix with instinct alone.</em></h2>
+    </div>
+    <div>
+      <p class="body-text">PIS is not a project management tool. It doesn't track tasks or generate reports. It runs a structured diagnosis on your operational processes and hands you back two things; a version your leadership can act on and a version your team can action immediately.</p>
+      <p class="body-text" style="margin-top:20px">Each module targets a different layer of the same problem. You can use one or all three. The output is the same either way; a clear picture of what's broken, who owns the break, and what to fix first.</p>
+    </div>
+  </div>
+
+  <div class="pillars">
+    <div class="pillar">
+      <span class="pillar-num">What it diagnoses</span>
+      <div class="pillar-title">Process health, not people performance</div>
+      <p class="pillar-body">Every output is structured around the process itself; steps, handoffs, ownership, and time gaps. Not who dropped the ball.</p>
+    </div>
+    <div class="pillar">
+      <span class="pillar-num">Who it's for</span>
+      <div class="pillar-title">Two outputs per module; two audiences</div>
+      <p class="pillar-body">Leadership gets board-ready commercial framing. The team gets a ranked, operational fix list. Same diagnosis; different language.</p>
+    </div>
+    <div class="pillar">
+      <span class="pillar-num">How fast</span>
+      <div class="pillar-title">Under 60 seconds. No consultant required</div>
+      <p class="pillar-body">Paste your process or fill the table. The engine runs. You get a diagnosis you can act on before the next meeting.</p>
+    </div>
+  </div>
+</section>
+
+<!-- THE THREE MODULES -->
+<section>
+  <div class="section-label">The Modules</div>
+  <p class="modules-intro">Three tools. Each one a different lens on the same problem.</p>
+
+  <a class="module-card" href="https://ops-process-analyser.vercel.app/" target="_blank" rel="noopener noreferrer">
+    <div class="module-num">M01<br><br>Process<br>Health</div>
+    <div>
+      <div class="module-tag">Module 01</div>
+      <div class="module-title">Ops Process Analyser</div>
+      <p class="module-desc">Paste any operational process in plain language. The engine classifies every step as manual or automated, calculates a health score out of 10, identifies your highest-risk handoffs, traces the root causes, and gives you three sequenced actions to fix it; ordered by impact and effort. Two outputs; a 150-word executive summary ready for a board deck and a full team-level diagnosis.</p>
+      <div class="pill-row">
+        <span class="pill">Health Score /10</span>
+        <span class="pill">Manual vs Automated</span>
+        <span class="pill">Root Causes</span>
+        <span class="pill">3 Sequenced Fix Actions</span>
+        <span class="pill">150w Exec Summary</span>
+      </div>
+    </div>
+    <div class="module-arrow">↗</div>
+  </a>
+
+  <a class="module-card" href="https://ownership-mapper.vercel.app/" target="_blank" rel="noopener noreferrer">
+    <div class="module-num">M02<br><br>Ownership<br>& Time</div>
+    <div>
+      <div class="module-tag">Module 02</div>
+      <div class="module-title">Ownership Mapper</div>
+      <p class="module-desc">One row per process step. Tell it who does the work, how long it takes in practice versus how long the actual task takes, and whether each handoff is manual or automated. The engine maps every step by ownership type; surfaces the gap between elapsed time and real task time; and tells you whether each delay is yours to fix internally, yours to influence, or yours to negotiate externally.</p>
+      <div class="pill-row">
+        <span class="pill">Gap Analysis</span>
+        <span class="pill">SLA Reality Check</span>
+        <span class="pill">Ownership Map</span>
+        <span class="pill">Delay Classification</span>
+        <span class="pill">VP-Level Output</span>
+      </div>
+    </div>
+    <div class="module-arrow">↗</div>
+  </a>
+
+  <a class="module-card" href="https://process-variation-analyser.vercel.app/" target="_blank" rel="noopener noreferrer">
+    <div class="module-num">M03<br><br>Regional<br>Divergence</div>
+    <div>
+      <div class="module-tag">Module 03</div>
+      <div class="module-title">Regional Process Variation Analyser</div>
+      <p class="module-desc">Same process. Different markets. Different results. Add up to four regions and the engine runs seven diagnostic stages in sequence; process decomposition, variance analysis, root cause classification, CAGE framework validation, step classification, Theory of Constraints, and a Pareto filter. Every step gets stamped; Standardise, Modify, or Keep Local.</p>
+      <div class="pill-row">
+        <span class="pill">Up to 4 Regions</span>
+        <span class="pill">7-Stage Engine</span>
+        <span class="pill">CAGE Framework</span>
+        <span class="pill">Theory of Constraints</span>
+        <span class="pill">Standardise / Modify / Keep Local</span>
+      </div>
+    </div>
+    <div class="module-arrow">↗</div>
+  </a>
+</section>
+
+<!-- HOW IT WORKS -->
+<section>
+  <div class="section-label">How it works</div>
+  <h2 class="section-headline">Three inputs.<br><em>One verdict.</em></h2>
+  <div class="steps-grid">
+    <div class="step">
+      <span class="step-num">Step 01</span>
+      <div class="step-title">Describe your process</div>
+      <p class="step-body">No templates. No structured forms on Module 01. Write it how you'd explain it to a colleague; include role names, tools, and where it typically breaks. Modules 02 and 03 use a table; one row per step.</p>
+    </div>
+    <div class="step">
+      <span class="step-num">Step 02</span>
+      <div class="step-title">The engine runs</div>
+      <p class="step-body">Depending on the module; the engine classifies steps, calculates time gaps, runs CAGE framework validation, or maps ownership. No user input required after you hit go.</p>
+    </div>
+    <div class="step">
+      <span class="step-num">Step 03</span>
+      <div class="step-title">Two outputs, two audiences</div>
+      <p class="step-body">Every module produces two layers. One for leadership; sharp, board-ready, commercial. One for the team; operational, ranked, immediately actionable.</p>
+    </div>
+    <div class="step">
+      <span class="step-num">Step 04</span>
+      <div class="step-title">Act on it</div>
+      <p class="step-body">The output tells you what to fix, in what order, and why. Not a list of symptoms. A sequenced diagnosis with effort and impact framing built in.</p>
+    </div>
+  </div>
+</section>
+
+<!-- WHO IS THIS FOR -->
+<section>
+  <div class="section-label">Who uses this</div>
+  <h2 class="section-headline">Built for the people<br><em>closest to the problem.</em></h2>
+  <div class="persona-grid">
+    <div class="persona">
+      <span class="persona-role">Operations</span>
+      <div class="persona-title">Ops Managers & Process Owners</div>
+      <p class="persona-body">You know the process is broken. You've known for a while. What you need is a structured read you can hand upward without it sounding like a complaint; and a ranked fix list you can start on Monday.</p>
+    </div>
+    <div class="persona">
+      <span class="persona-role">Leadership</span>
+      <div class="persona-title">VPs, Directors & Delivery Heads</div>
+      <p class="persona-body">You need to know whether the SLA target is realistic; which market is the outlier; and whether the problem is yours to fix or someone else's to negotiate. PIS gives you that in language that belongs in a QBR.</p>
+    </div>
+    <div class="persona">
+      <span class="persona-role">Consulting & Advisory</span>
+      <div class="persona-title">Consultants & Business Analysts</div>
+      <p class="persona-body">You already know the frameworks. PIS runs them faster than a workshop and gives you a structured output to pressure-test your own read; or hand straight to the client as a first-pass diagnostic.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<div class="cta-section">
+  <h2 class="cta-headline">Pick a module.<br>Run a diagnosis.<br><em>See what's actually broken.</em></h2>
+  <p class="cta-sub">No consultant. No workshop. No waiting. Two outputs per module. Under 60 seconds.</p>
+  <div class="cta-buttons">
+    <a class="btn-primary" href="https://ops-process-analyser.vercel.app/" target="_blank" rel="noopener noreferrer">Run Ops Diagnosis →</a>
+    <a class="btn-secondary" href="https://ownership-mapper.vercel.app/" target="_blank" rel="noopener noreferrer">Map Ownership →</a>
+    <a class="btn-secondary" href="https://process-variation-analyser.vercel.app/" target="_blank" rel="noopener noreferrer">Analyse Regions →</a>
+  </div>
+</div>
+
+<!-- DISCLAIMER -->
+<div class="disclaimer">
+  <p>Analyses are benchmarked against best industry practices and the author's operational experience. Treat this as your thinking aid; not a ready-made fix.</p>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-left">PIS / V1.0 — Process Intelligence Suite</div>
+  <div class="footer-right">Built by <a href="https://www.linkedin.com/in/vikrantsharma10/" target="_blank" rel="noopener noreferrer">Vikrant Sharma</a></div>
+</footer>
+
+</body>
+</html>
